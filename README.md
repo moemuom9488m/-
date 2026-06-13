@@ -55,12 +55,16 @@
 
 ## 📁 項目結構
 
-```
+```text
 .
-├── README.md                 # 項目説明文檔（本文件）
-├── pom.xml                   # Maven 項目配置文件
-├── application.properties    # Spring Boot 應用配置
-└── Mavenproject20           # Java 主程序
+├── README.md                 # 項目說明文檔（本文件）
+├── pom.xml                   # Maven 項目配置文件，定義依賴與構建設定
+└── src                       # 專案原始碼目錄
+    └── main
+        ├── java
+        │   └── Mavenproject20.java       # Java 主程式，包含 Spring Boot 啟動與漏洞觸發點
+        └── resources
+            └── application.properties    # Spring Boot 應用配置參數
 ```
 
 ---
