@@ -1,4 +1,4 @@
-# 🛡️ 漏洞實戰報告：Log4Shell (CVE-2021-44228)
+# 漏洞實戰報告：Log4Shell (CVE-2021-44228)
 https://hackmd.io/@Eevee940323/H1ooVxsbMg
 
 # Log4Shell CVE-2021-44228 實驗環境架設
