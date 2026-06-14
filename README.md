@@ -37,12 +37,13 @@ https://hackmd.io/@Eevee940323/H1ooVxsbMg
    ```
 
 3. **運行應用**
+   
    因應較高版本 Java (如 Java 21) 預設封鎖 JNDI 遠端載入類別，需手動注入 JVM 參數以關閉防護：
    ```bash
    mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Dcom.sun.jndi.ldap.object.trustURLCodebase=true"
    ```
 
-4. **驗證運行**
+5. **驗證運行**
    ```
    應用將在 http://localhost:9090 啟動
    flag.txt 將自動生成在伺服器目錄中
