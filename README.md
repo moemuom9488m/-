@@ -28,7 +28,7 @@ https://hackmd.io/@Eevee940323/H1ooVxsbMg
 1. **複製或下載項目**
    ```bash
    git clone https://github.com/moemuom9488m/-.git
-   cd -
+   cd ./-
    ```
 
 2. **編譯項目**
@@ -48,7 +48,6 @@ https://hackmd.io/@Eevee940323/H1ooVxsbMg
    應用將在 http://localhost:9090 啟動
    flag.txt 將自動生成在伺服器目錄中
    ```
-
 ---
 
 ## 🎯 靶機目標
@@ -209,9 +208,8 @@ Maven 項目配置文件，定義項目依賴和構建配置：
 ### application.properties
 Spring Boot 應用配置文件：
 ```properties
-server.port=8083
+server.port=9090
 ```
-（注：實際運行時在代碼中被設置為 9090）
 
 ### Mavenproject20.java
 主程序文件，包含：
