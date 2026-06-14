@@ -1,4 +1,4 @@
-# Log4Shell CVE-2021-44228 靶機練習
+# Log4Shell CVE-2021-44228 實驗分析
 
 ## 📋 項目簡介
 
@@ -10,10 +10,10 @@
 - **框架**：Spring Boot 2.5.6 + Apache Log4j 2.14.1
 
 ---
-# 🛡️ 漏洞實驗報告：Log4Shell (CVE-2021-44228)
+
+## 🛡️ 漏洞實戰報告：Log4Shell (CVE-2021-44228)
 https://hackmd.io/@Eevee940323/H1ooVxsbMg
 
-## 🚀 快速開始
 
 ### 環境需求
 
