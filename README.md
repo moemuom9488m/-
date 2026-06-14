@@ -68,7 +68,9 @@ https://hackmd.io/@Eevee940323/H1ooVxsbMg
 └── src                       # 專案原始碼目錄
     └── main
         ├── java
-        │   └── Mavenproject20.java       # Java 主程式，包含 Spring Boot 啟動與漏洞觸發點
+        │   └── tw
+        │       └── edu
+        │           └── Mavenproject20.java       # Java 主程式，包含 Spring Boot 啟動與漏洞觸發點
         └── resources
             └── application.properties    # Spring Boot 應用配置參數
 ```
