@@ -10,6 +10,8 @@
 - **框架**：Spring Boot 2.5.6 + Apache Log4j 2.14.1
 
 ---
+# 🛡️ 漏洞實驗報告：Log4Shell (CVE-2021-44228)
+https://hackmd.io/@Eevee940323/H1ooVxsbMg
 
 ## 🚀 快速開始
 
